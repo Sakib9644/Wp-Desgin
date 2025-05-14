@@ -125,7 +125,7 @@
                 @endcanany
 
                 {{-- Categories --}}
-                @canany(['category-create', 'grade-create','teachergrades-create'])
+                @canany(['category-create', 'grade-create','teachergrades-create','location-create'])
                     @php
                         $isRolePermissionActive =
                             Route::is('main-category.index') || Route::is('grades.index')
@@ -159,6 +159,13 @@
                                         <a href="{{ route('teachergrades.index') }}"
                                             class="nav-link {{ Route::is('teachergrades.index') ? 'active' : '' }}" data-key="t-teachergrades">
                                             Grade Assgin to Teacher</a>
+                                    </li>
+                                @endcan
+                                @can('location-create')
+                                    <li class="nav-item">
+                                        <a href="{{ route('location.index') }}"
+                                            class="nav-link {{ Route::is('location.index') ? 'active' : '' }}" data-key="t-location">
+                                            Locations</a>
                                     </li>
                                 @endcan
                             </ul>

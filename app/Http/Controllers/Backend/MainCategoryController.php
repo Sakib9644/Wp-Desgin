@@ -36,7 +36,7 @@ class MainCategoryController extends Controller
 
                     $deleteBtn = '<button onclick="confirmDelete(' . $row->id . ')" class="btn btn-danger btn-sm">Delete</button>';
 
-                    return $editBtn . ' ' . $deleteForm . $deleteBtn;
+                    return $editBtn . ' ' . $deleteForm ;
                 })
                 ->rawColumns(['image', 'action'])
                 ->make(mDataSupport: true);
@@ -77,11 +77,9 @@ class MainCategoryController extends Controller
             $category = MainCategory::findOrFail($id);
             $category->name = $request->name;
 
-            $image = upload_image($request, $category,$category->image);
 
-            if ($image) {
-                $category->image = $image;
-            }
+            $category->image = upload_image($request, $category,$category->image);
+            
 
             $category->save();
 

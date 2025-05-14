@@ -15,17 +15,25 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
+
+
+
+
     public function run(): void
     {
+
+        $this->call([
+            CountriesTableSeeder::class,
+        ]);
         $user = User::factory()->create([
 
-            "name"=> "Admin User",
-            "email"=> "admin@gmail.com",
-            "password"=> Hash::make("12345678"),
+            "name" => "Admin User",
+            "email" => "admin@gmail.com",
+            "password" => Hash::make("12345678"),
 
         ]);
 
-       
+
         $role = new Role();
         $role->name = 'Super Admin';
         $role->save();
@@ -42,7 +50,7 @@ class DatabaseSeeder extends Seeder
             'security-settings',
             'notification-settings',
             'category-create',
-            
+
             // Role Permission
             'role.create',
             'permission.create',

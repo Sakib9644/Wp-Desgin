@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Backend\GradeController;
+use App\Http\Controllers\Backend\LocationController;
 use App\Http\Controllers\Backend\MainCategoryController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\RoleController;
@@ -54,4 +55,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/roles/{id}', [RoleController::class, 'permission'])->name('find.permissions');
     Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
     Route::post('/roles/assign-permissions', [RoleController::class, 'assignPermissions'])->name('roles.assign.permissions');
+Route::get('campus/edit/{id}', [LocationController::class, 'campus_edit'])->name('campus.edit');
+
+    Route::post('update-campus', [LocationController::class, 'update_campus'])->name('update_campus');
+    Route::any('update-edit/{id?}', [LocationController::class, 'update_campus'])->name('campus.update');
+
+    Route::resource('location', LocationController::class);
+    // Route::resource('location', App\Http\Controllers\Backend\LessonController::class);
 });

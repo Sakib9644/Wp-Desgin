@@ -20,7 +20,7 @@ if (!function_exists('upload_image')) {
             return '/uploads/' . $folderName . '/' . $thumbnailName;
         }
 
-        return null; // Ensure a return value always exists
+        return $modelInstance->image; // Ensure a return value always exists
     }
 }
 

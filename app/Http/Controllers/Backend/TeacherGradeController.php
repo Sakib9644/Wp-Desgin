@@ -7,6 +7,8 @@ use App\Models\Grade;
 use App\Models\TecaherGrade;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Nakanakaii\Countries\Countries;
+use Nnjeim\World\World;
 use Yajra\DataTables\Facades\DataTables;
 use Spatie\Permission\Models\Role;
 
@@ -41,6 +43,8 @@ class TeacherGradeController extends Controller
             $query->where('name', 'teacher');
         })->get();
         $grades = Grade::all();
+
+        
 
         return view('backend.grade.teacheracess.index', compact('users', 'grades')); // Your blade file
     }

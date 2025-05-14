@@ -4,7 +4,12 @@
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
+                {{-- @php
+    $get = App\Models\User::where('name','Barclay Collier')->first();
+    $c = $get->campus;
 
+    dd( $c->user );
+@endphp --}}
                 <div class="row">
                     <!-- Create Form -->
                     <div class="col-md-4">
@@ -18,7 +23,10 @@
                                         <select name="user_id" class="form-control select2">
                                             <option value="" disabled selected>Select School Admin</option>
                                             @foreach ($schoolAdmins as $admin)
-                                                <option value="{{ $admin->id }}">{{ $admin->name }}</option>
+                                                <option value="{{ $admin->id }}">
+                                                    {{ $admin->name }}
+                                                    ({{ $admin->roles->first()->name ?? 'No Role Assigned' }})
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -65,6 +73,7 @@
                                             <th>ID</th>
                                             <th>Name</th>
                                             <th>Email</th>
+                                            <th>Role</th>
                                             <th>Campus</th>
                                         </tr>
                                     </thead>
@@ -104,12 +113,13 @@
                                 options += '<option value="' + district.id + '">' + district
                                     .name + '</option>';
                             });
-                           
+
                             $('#district_id').html(options);
 
                         } else {
                             $('#district_id').html(
                                 '<option value="" selected>No districts found</option>');
+                                
                         }
                     },
                     error: function() {
@@ -119,39 +129,35 @@
             }
         });
 
+$('#district_id').on('change', function() {
+    let district_id = $(this).val();
+    $('#campus_id').html('<option value="" selected>Loading...</option>');
 
-        $('#district_id').on('change', function() {
-            let district_id = $(this).val();
-            $('#campus_id').html('<option value="" selected>Loading...</option>');
-
-             if (district_id) {
-                $.ajax({
-                    url: '{{ route('ajax.get-campuses', 'id') }}'.replace('id', country_id),
-                    method: 'GET',
-                    data: {
-                        district_id: district_id
-                    },
-                    success: function(res) {
-                        if (res && res.length > 0) {
-                            let options = '<option value="" selected>Select Campus</option>';
-                            res.forEach(function(district) {
-                                options += '<option value="' + district.id + '">' + district
-                                    .name + '</option>';
-                            });
-                           
-                            $('#campus_id').html(options);
-
-                        } else {
-                            $('#district_id').html(
-                                '<option value="" selected>No Campus found</option>');
-                        }
-                    },
-                    error: function() {
-                        alert("Error loading districts");
-                    }
-                });
+    if (district_id) {
+        $.ajax({
+            url: '{{ route('ajax.get-campuses') }}', // no replacement needed
+            method: 'GET',
+            data: {
+                district_id: district_id
+            },
+            success: function(res) {
+                if (res && res.length > 0) {
+                    let options = '<option value="" selected>Select Campus</option>';
+                    res.forEach(function(campus) {
+                        options += '<option value="' + campus.id + '">' + campus.name + '</option>';
+                    });
+                    $('#campus_id').html(options);
+                } else {
+                    $('#campus_id').html('<option value="" selected>No Campus found</option>');
+                }
+            },
+            error: function() {
+                alert("Error loading campuses");
             }
         });
+    }
+});
+
     </script>
 
     <script type="text/javascript">
@@ -173,6 +179,10 @@
                     {
                         data: 'email',
                         name: 'email'
+                    },
+                    {
+                        data: 'role',
+                        name: 'role'
                     },
                     {
                         data: 'campus',

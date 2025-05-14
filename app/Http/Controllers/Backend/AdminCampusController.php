@@ -19,16 +19,19 @@ class AdminCampusController extends Controller
             $data = User::whereHas('roles', function ($query) {
                 $query->whereIn('name', ['school admin', 'Teacher']); // adjust if you're using role names
             })
-                ->with('campus')
+                ->with('campus', 'roles') // Eager load roles to avoid N+1 queries
                 ->select('id', 'name', 'email', 'campus_id')
                 ->get();
+
             return DataTables::of($data)
                 ->addIndexColumn()
-
                 ->addColumn('campus', function ($row) {
                     return $row->campus->name ?? 'No Campus Assigned';
                 })
-
+                ->addColumn('role', function ($row) {
+                    // Get the first role name, or 'No Role Assigned' if the user has no roles
+                    return $row->roles->first()->name ?? 'No Role Assigned';
+                })
                 ->rawColumns(['action'])
                 ->make(true);
         }
@@ -40,17 +43,18 @@ class AdminCampusController extends Controller
 
         return view('backend.School-Admin-Campus.index', compact('campuses', 'schoolAdmins'));
     }
-public function getDistricts(Request $request)
-{
-    $districts = District::where('country_id', $request->country_id)->get();
-    return response()->json($districts);
-}
 
-public function getCampuses(Request $request)
-{
-    $campuses = Campus::where('districts_id', $request->district_id)->get();
-    return response()->json($campuses);
-}
+    public function getDistricts(Request $request)
+    {
+        $districts = District::where('country_id', $request->country_id)->get();
+        return response()->json($districts);
+    }
+
+    public function getCampuses(Request $request)
+    {
+        $campuses = Campus::where('districts_id', $request->district_id)->get();
+        return response()->json($campuses);
+    }
 
     public function store(Request $request)
     {
@@ -69,10 +73,8 @@ public function getCampuses(Request $request)
                 })
                 ->first();
 
-            
-
-            // If assigning a School Admin
-            if ($user->hasRole('School Admin') && $assignedAdmin) {
+            // If a School Admin is already assigned to the campus
+            if ($assignedAdmin) {
                 return redirect()->route('school-campus.index')
                     ->with('error', 'This Campus is already assigned to School Admin: ' . $assignedAdmin->name);
             }

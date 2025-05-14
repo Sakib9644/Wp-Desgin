@@ -63,5 +63,9 @@ class User extends Authenticatable implements JWTSubject
 {
     return $this->belongsToMany(Grade::class, 'tecaher_grades');
 }
+   public function campus(array $attributes = [])
+{
+    return $this->belongsTo(Campus::class, 'campus_id');
+}
 
 }

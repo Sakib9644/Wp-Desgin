@@ -6,6 +6,7 @@
         <div class="container-fluid">
 
             {{-- index page content for lesson --}}
+            
 
         </div>
     </div>

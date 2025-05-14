@@ -29,7 +29,7 @@ class LocationController extends Controller
                     })
                     ->addColumn('Campus', function ($row) {
                         if ($row->campus && $row->campus->count()) {
-                            return $row->campus->pluck('name')->implode(', ');
+                            return $row->campus->pluck('name')->implode(',');
                         }
                         return 'No Campus Assigned';
                     })

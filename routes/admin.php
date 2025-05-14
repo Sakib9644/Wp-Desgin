@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Backend\AdminCampusController;
 use App\Http\Controllers\Backend\GradeController;
 use App\Http\Controllers\Backend\LocationController;
 use App\Http\Controllers\Backend\MainCategoryController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RoleControllerr;
+use App\Http\Controllers\Backend\TeacherCampusController;
 use App\Http\Controllers\Backend\TeacherGradeController;
 use App\Http\Controllers\Backend\WebsitesetupController;
 use App\Http\Controllers\ProfileController;
@@ -59,7 +61,10 @@ Route::get('campus/edit/{id}', [LocationController::class, 'campus_edit'])->name
 
     Route::post('update-campus', [LocationController::class, 'update_campus'])->name('update_campus');
     Route::any('update-edit/{id?}', [LocationController::class, 'update_campus'])->name('campus.update');
+Route::GET('/get-districts', [AdminCampusController::class, 'getDistricts'])->name('ajax.get-districts');
+Route::GET('/get-campuses', [AdminCampusController::class, 'getCampuses'])->name('ajax.get-campuses');
 
     Route::resource('location', LocationController::class);
+    Route::resource('school-campus', AdminCampusController::class);
     // Route::resource('location', App\Http\Controllers\Backend\LessonController::class);
 });

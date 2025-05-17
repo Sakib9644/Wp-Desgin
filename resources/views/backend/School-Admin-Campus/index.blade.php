@@ -19,9 +19,9 @@
                                 <form method="POST" action="{{ route('school-campus.store') }}">
                                     @csrf
                                     <div class="mb-3">
-                                        <label for="user_id" class="form-label">Select School Admin</label>
-                                        <select name="user_id" class="form-control select2">
-                                            <option value="" disabled selected>Select School Admin</option>
+                                        <label for="user_id" class="form-label">Select School Admin or Teacher</label>
+                                        <select name="user_id" class="form-control select2" required>
+                                            <option value="" disabled selected>Select School Admin or Teacher</option>
                                             @foreach ($schoolAdmins as $admin)
                                                 <option value="{{ $admin->id }}">
                                                     {{ $admin->name }}
@@ -36,7 +36,10 @@
                                         <select name="country_id" id="country_id" class="form-control select2">
                                             <option value="" disabled selected>Select Country</option>
                                             @foreach (App\Models\Country::all() as $country)
-                                                <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                                <option value="{{ $country->id }}"
+                                                    {{ $country->name == 'Bangladesh' ? 'selected' : '' }}>
+                                                    {{ $country->name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -93,8 +96,7 @@
             }
         });
 
-        $('#country_id').on('change', function() {
-            let country_id = $(this).val();
+    let country_id = $('#country_id').val();
 
             $('#district_id').html('<option value="" selected>Loading...</option>');
             $('#campus_id').html('<option value="" selected>Select Campus</option>');
@@ -119,7 +121,7 @@
                         } else {
                             $('#district_id').html(
                                 '<option value="" selected>No districts found</option>');
-                                
+
                         }
                     },
                     error: function() {
@@ -127,37 +129,36 @@
                     }
                 });
             }
-        });
 
-$('#district_id').on('change', function() {
-    let district_id = $(this).val();
-    $('#campus_id').html('<option value="" selected>Loading...</option>');
+        $('#district_id').on('change', function() {
+            let district_id = $(this).val();
+            $('#campus_id').html('<option value="" selected>Loading...</option>');
 
-    if (district_id) {
-        $.ajax({
-            url: '{{ route('ajax.get-campuses') }}', // no replacement needed
-            method: 'GET',
-            data: {
-                district_id: district_id
-            },
-            success: function(res) {
-                if (res && res.length > 0) {
-                    let options = '<option value="" selected>Select Campus</option>';
-                    res.forEach(function(campus) {
-                        options += '<option value="' + campus.id + '">' + campus.name + '</option>';
-                    });
-                    $('#campus_id').html(options);
-                } else {
-                    $('#campus_id').html('<option value="" selected>No Campus found</option>');
-                }
-            },
-            error: function() {
-                alert("Error loading campuses");
+            if (district_id) {
+                $.ajax({
+                    url: '{{ route('ajax.get-campuses') }}', // no replacement needed
+                    method: 'GET',
+                    data: {
+                        district_id: district_id
+                    },
+                    success: function(res) {
+                        if (res && res.length > 0) {
+                            let options = '<option value="" selected>Select Campus</option>';
+                            res.forEach(function(campus) {
+                                options += '<option value="' + campus.id + '">' + campus.name +
+                                    '</option>';
+                            });
+                            $('#campus_id').html(options);
+                        } else {
+                            $('#campus_id').html('<option value="" selected>No Campus found</option>');
+                        }
+                    },
+                    error: function() {
+                        alert("Error loading campuses");
+                    }
+                });
             }
         });
-    }
-});
-
     </script>
 
     <script type="text/javascript">

@@ -39,12 +39,19 @@ class TeacherGradeController extends Controller
                 ->make(true);
         }
 
-        $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'teacher');
-        })->get();
+        if (auth()->user()->hasRole('Super Admin')) {
+
+            $users = User::whereHas('roles', function ($query) {
+                $query->where('name', 'teacher');
+            })->get();
+        } else {
+            $campus = auth()->user()->campus;
+
+            $users = $campus->user ?? [];
+        }
         $grades = Grade::all();
 
-        
+
 
         return view('backend.grade.teacheracess.index', compact('users', 'grades')); // Your blade file
     }

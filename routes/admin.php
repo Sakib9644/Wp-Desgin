@@ -40,6 +40,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::post('/user/store', [RegisteredUserController::class, 'admin_user'])->name('user.store');
 
+    Route::get('/users/status/{id}', [RegisteredUserController::class, 'update_status'])->name('user.status');
+
     Route::get('/create/user', [RegisteredUserController::class, 'admin_create'])->name('users.create');
     Route::get('/user/edit/{id}', [RegisteredUserController::class, 'edit'])->name('user.edit');
 
@@ -57,14 +59,16 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/roles/{id}', [RoleController::class, 'permission'])->name('find.permissions');
     Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
     Route::post('/roles/assign-permissions', [RoleController::class, 'assignPermissions'])->name('roles.assign.permissions');
-Route::get('campus/edit/{id}', [LocationController::class, 'campus_edit'])->name('campus.edit');
+    Route::get('campus/edit/{id}', [LocationController::class, 'campus_edit'])->name('campus.edit');
 
     Route::post('update-campus', [LocationController::class, 'update_campus'])->name('update_campus');
     Route::any('update-edit/{id?}', [LocationController::class, 'update_campus'])->name('campus.update');
-Route::GET('/get-districts', [AdminCampusController::class, 'getDistricts'])->name('ajax.get-districts');
-Route::GET('/get-campuses', [AdminCampusController::class, 'getCampuses'])->name('ajax.get-campuses');
+    Route::GET('/get-districts', [AdminCampusController::class, 'getDistricts'])->name('ajax.get-districts');
+    Route::GET('/get-campuses', [AdminCampusController::class, 'getCampuses'])->name('ajax.get-campuses');
 
     Route::resource('location', LocationController::class);
     Route::resource('school-campus', AdminCampusController::class);
     // Route::resource('location', App\Http\Controllers\Backend\LessonController::class);
+    Route::resource('course', App\Http\Controllers\Backend\CourseController::class);
+    Route::resource('gradecategory', App\Http\Controllers\Backend\GradecategoryController::class);
 });

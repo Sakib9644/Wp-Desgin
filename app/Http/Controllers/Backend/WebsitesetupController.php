@@ -26,7 +26,7 @@ public function update(Request $request)
     ]);
 
     try {
-        $websiteSetup = WebsiteSetup::firstOrCreate();
+        $websiteSetup = WebsiteSetup::firstOrNew();
 
         $websiteSetup->website_name = $request->website_name;
         $websiteSetup->admin_footer = $request->admin_footer;

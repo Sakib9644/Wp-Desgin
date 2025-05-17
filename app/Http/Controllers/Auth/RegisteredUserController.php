@@ -85,40 +85,69 @@ class RegisteredUserController extends Controller
         return redirect()->back()->with('success', 'User deleted successfully!');
     }
 
+    public function update_status($id)
+    {
+        $user = User::findOrFail($id);
+
+        // Toggle status
+        $user->status = $user->status == 0 ? 1 : 0;
+        $user->save();
+
+        // Set response message
+        $message = $user->status == 1 ? 'User Approved Successfully!' : 'User Marked as Pending.';
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+        ]);
+    }
 
     public function admin_create(Request $request)
     {
         if ($request->ajax()) {
-    $data = User::with('roles')->select('users.*');
+            if (auth()->user()->hasRole('Super Admin')) {
+                $data = User::with('roles')->select('users.*');
+            } else {
+                $datas = auth()->user()->campus;
+                $data = $datas->user ?? [];
+            }
 
-    return DataTables::of($data)
-        ->addIndexColumn()
-        ->addColumn('role', function ($user) {
-            return $user->getRoleNames()->first();
-        })
-        ->addColumn('action', function ($user) {
-            // Edit Button - Link to external edit page
-            $editBtn = '<a href="' . route('user.edit', $user->id) . '" class="btn btn-sm btn-warning">Edit</a>';
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('role', function ($user) {
+                    return $user->getRoleNames()->first();
+                })
+                ->addColumn('status', function ($user) {
+                    $checked = $user->status ? 'checked' : '';
+                    return '<label class="switch">
+                    <input type="checkbox" class="status-toggle" data-id="' . $user->id . '" ' . $checked . '>
+                    <span class="slider round"></span>
+                </label>';
+                })
+                ->addColumn('action', function ($user) {
+                    if (auth()->user()->hasRole('Super Admin')) {
+                        $editBtn = '<a href="' . route('user.edit', $user->id) . '" class="btn btn-sm btn-warning">Edit</a>';
 
-            // Delete Button
-            $deleteForm = '<form id="delete-form-' . $user->id . '" method="POST" action="' . route('user.destroy', $user->id) . '" style="display:inline-block;">' . 
-                          csrf_field() . method_field('DELETE') . 
-                          '</form>';
+                        $deleteForm = '<form id="delete-form-' . $user->id . '" method="POST" action="' . route('user.destroy', $user->id) . '" style="display:inline-block;">' .
+                            csrf_field() . method_field('DELETE') .
+                            '</form>';
 
-            $deleteBtn = '<button onclick="confirmDelete(' . $user->id . ')" class="btn btn-sm btn-danger">Delete</button>';
+                        $deleteBtn = '<button onclick="confirmDelete(' . $user->id . ')" class="btn btn-sm btn-danger">Delete</button>';
 
-            return $editBtn . ' ' . $deleteForm . ' ' . $deleteBtn;
-        })
-        ->rawColumns(['action'])
-        ->make(true);
-}
+                        return $editBtn . ' ' . $deleteForm . ' ' . $deleteBtn;
+                    } else {
+                        return '-';
+                    }
+                })
+                ->rawColumns(['action', 'status'])
+                ->make(true);
+        }
 
-
-
-        // Return the user creation form view
         return view('backend.role.user_create');
     }
-    public function edit($id) {
+
+    public function edit($id)
+    {
         $user = User::findOrFail($id);
         return view('backend.role.user_edit', compact('user'));
     }
@@ -136,6 +165,7 @@ class RegisteredUserController extends Controller
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
+            $user->status = 1;
             $user->password = Hash::make($request->password);
             $user->assignRole($request->role_name);
             $user->save();

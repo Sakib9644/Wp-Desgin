@@ -17,7 +17,7 @@ class AdminCampusController extends Controller
     {
         if ($request->ajax()) {
             $data = User::whereHas('roles', function ($query) {
-                $query->whereIn('name', ['school admin', 'Teacher']); // adjust if you're using role names
+                $query->whereIn('name', ['school admin', 'Teacher','Student']); // adjust if you're using role names
             })
                 ->with('campus', 'roles') // Eager load roles to avoid N+1 queries
                 ->select('id', 'name', 'email', 'campus_id')
@@ -38,7 +38,7 @@ class AdminCampusController extends Controller
 
         $campuses = Campus::select('id', 'name')->get();
         $schoolAdmins = User::whereHas('roles', function ($q) {
-            $q->whereIn('name', ['school admin', 'Teacher']); // adjust if you're using role names
+            $q->whereIn('name', ['school admin', 'Teacher','Student']); // adjust if you're using role names
         })->select('id', 'name')->get();
 
         return view('backend.School-Admin-Campus.index', compact('campuses', 'schoolAdmins'));
@@ -66,19 +66,27 @@ class AdminCampusController extends Controller
         try {
             $user = User::findOrFail($request->user_id);
 
-            // Check if this campus is already assigned to a School Admin
-            $assignedAdmin = User::where('campus_id', $request->campus_id)
-                ->whereHas('roles', function ($query) {
-                    $query->where('name', 'School Admin');
-                })
+            $assignedAdmin = User::role('School Admin')
+                ->where('campus_id', $request->campus_id)
                 ->first();
 
             // If a School Admin is already assigned to the campus
-            if ($assignedAdmin) {
+            if ($user->hasRole('School Admin') && $assignedAdmin) {
                 return redirect()->route('school-campus.index')
                     ->with('error', 'This Campus is already assigned to School Admin: ' . $assignedAdmin->name);
             }
+            $campus = Campus::find($request->campus_id);
 
+            if ($user->hasRole('Teacher') && !$assignedAdmin) {
+                return redirect()->route('school-campus.index')
+                    ->with('error', 'The campus "' . $campus->name . '" is not assigned to any School Admin. Please assign a School Admin before assigning a Teacher.');
+            }
+            $campus = Campus::find($request->campus_id);
+
+            if ($user->hasRole('Student') && !$assignedAdmin) {
+                return redirect()->route('school-campus.index')
+                    ->with('error', 'The campus "' . $campus->name . '" is not assigned to any School Admin. Please assign a School Admin before assigning a Teacher.');
+            }
 
             // If not already assigned, assign the campus
             $user->campus_id = $request->campus_id;

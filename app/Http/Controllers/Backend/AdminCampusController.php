@@ -16,7 +16,7 @@ class AdminCampusController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = User::whereHas('roles', function ($query) {
+            $data = User::where('status',true)->whereHas('roles', function ($query) {
                 $query->whereIn('name', ['school admin', 'Teacher','Student']); // adjust if you're using role names
             })
                 ->with('campus', 'roles') // Eager load roles to avoid N+1 queries
@@ -37,7 +37,7 @@ class AdminCampusController extends Controller
         }
 
         $campuses = Campus::select('id', 'name')->get();
-        $schoolAdmins = User::whereHas('roles', function ($q) {
+        $schoolAdmins = User::where('status',true)->whereHas('roles', function ($q) {
             $q->whereIn('name', ['school admin', 'Teacher','Student']); // adjust if you're using role names
         })->select('id', 'name')->get();
 

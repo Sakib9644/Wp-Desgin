@@ -59,7 +59,7 @@ public function update(Request $request)
 
         return back()->with('success', 'Website settings updated successfully!');
     } catch (Exception $e) {
-        return back()->with('error', 'Something went wrong. Please try again');
+        return back()->with('error', 'Something went wrong. Please try again' . $e->getMessage());
     }
 }
 

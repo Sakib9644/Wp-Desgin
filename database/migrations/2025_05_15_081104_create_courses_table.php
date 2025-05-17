@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->string('image');
-            $table->string('name');
+            $table->foreignId('grade_category')->constrained('gradecategories')->onDelete('cascade');
+            $table->string('status');
+            $table->string('file');
             $table->timestamps();
         });
     }

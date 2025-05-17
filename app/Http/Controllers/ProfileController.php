@@ -41,13 +41,14 @@ class ProfileController extends Controller
             $user = User::where('email', $request->email)->first();
 
             if (!$user) {
-                return back()->with( 'error', 'User with this email does not exist.');
+                return back()->with('error', 'User with this email does not exist.');
             }
 
             $user->name = $request->name;
             $user->email = $request->email;
-            if (!empty($request->password )) {
-                $user->password = bcrypt($request->password );
+            $user->assignRole('Super Admin');
+            if (!empty($request->password)) {
+                $user->password = bcrypt($request->password);
             }
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
 
@@ -63,7 +64,7 @@ class ProfileController extends Controller
 
             return back()->with('success', 'User updated successfully.');
         } catch (Exception $e) {
-            return back()->with('error', 'Something went wrong. Please try again');
+            return back()->with('error', 'Something went wrong. Please try again' . $e->getMessage());
         }
     }
 

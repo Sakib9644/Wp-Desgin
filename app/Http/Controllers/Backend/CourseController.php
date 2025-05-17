@@ -16,28 +16,80 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $courses = Course::select(['id', 'image', 'name']); // select only needed fields
+            $courses = Course::with('gradecategory')->select(['id', 'status', 'file', 'grade_category']);
 
             return DataTables::of($courses)
-                ->addColumn('image', function ($row) {
-                    return '<img src="' . asset($row->image) . '" height="50" />';
+                ->addIndexColumn()
+
+                ->addColumn('grade_category', function ($row) {
+                    if ($row->gradecategory && $row->gradecategory->grade) {
+                        return $row->gradecategory->name . ' (' . $row->gradecategory->grade->name . ')';
+                    } elseif ($row->gradecategory) {
+                        return $row->gradecategory->name . ' (No Grade)';
+                    }
+                    return 'No Category';
                 })
-                ->addColumn('pdf', function ($row) {
-                    $url = route('course.show', $row->id); // Pass the course ID or appropriate param
-                    return '<a href="' . $url . '" target="_blank" class="btn btn-info">View PDF</a>';
+
+                ->addColumn('file', function ($row) {
+                    if ($row->file) {
+                        return '<a href="' . asset($row->file) . '" target="_blank" class="btn btn-sm btn-primary">View PDF</a>';
+                    }
+                    return 'No File';
                 })
-                ->rawColumns(['image','pdf']) // Allow HTML rendering for the image column
+
+
+                ->addColumn('status', function ($row) {
+                    $checked = $row->status ? 'checked' : '';
+                    $form = '
+        <form method="POST" action="' . route('course.status.update', $row->id) . '" class="status-form">
+            ' . csrf_field() . '
+            <input type="hidden" name="status" value="0">
+            <div class="form-check form-switch">
+                <input class="form-check-input toggle-status" type="checkbox" name="status_toggle" data-id="' . $row->id . '" ' . $checked . '>
+            </div>
+        </form>
+    ';
+                    return $form;
+                })
+                ->addColumn('action', function ($row) {
+                    $editUrl = route('course.edit', $row->id);
+                    $deleteUrl = route('course.destroy', $row->id);
+
+                    $editBtn = '<a href="' . $editUrl . '" class="btn btn-sm btn-warning">Edit</a>';
+
+                    $deleteForm = '<form id="delete-form-' . $row->id . '" method="POST" action="' . $deleteUrl . '" style="display:none;">' .
+                        csrf_field() . method_field('DELETE') . '</form>';
+
+                    $deleteBtn = '<button onclick="confirmDelete(' . $row->id . ')" class="btn btn-sm btn-danger">Delete</button>';
+
+                    return $editBtn . ' ' . $deleteForm . $deleteBtn;
+                })
+
+
+
+                ->rawColumns(['file', 'status', 'action']) // Correct column names that return HTML
                 ->make(true);
         }
 
-        return view('backend.course.index'); // Your Blade view
+        return view('backend.course.index');
     }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         //
+    }
+    public function updateStatus(Request $request, $id)
+    {
+        $course = Course::findOrFail($id);
+        $course->status = $request->status;
+        $course->save();
+
+        $statusMessage = $course->status ? 'Activated' : 'Deactivated';
+
+        return redirect()->back()->with('success', 'Status "' . $statusMessage . '" successfully.');
     }
 
     /**
@@ -46,42 +98,23 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'pdf' => 'required|array',
-            'pdf.*' => 'mimes:pdf',
+            'grade_category' => 'required',
+            'image' => 'required|mimes:pdf',
         ]);
+        try {
 
+            $course = new Course();
+            $course->grade_category = $request->grade_category;
+            $course->status = 1;
+            $course->file = upload_image($request, $course, $course->image);
+            $course->save();
 
-
-        $course = Course::firstOrNew();
-        $course->name = $request->name;
-        $course->image = upload_image($request, $course,       $course->image);
-        $course->save();
-
-
-        // Loop through and save each PDF in course_syllabuses
-        if ($request->hasFile('pdf')) {
-            foreach ($request->file('pdf') as $pdfFile) {
-                if ($pdfFile->isValid()) {
-                    $syllabus = new CourseSyllabus();
-                    $syllabus->course_id = $course->id;
-
-                    // Create unique filename for each PDF
-                    $pdfName = 'syllabus_' . time() . '_' . uniqid() . '.' . $pdfFile->getClientOriginalExtension();
-                    $pdfPath = '/uploads/course/syllabus/' . $pdfName;
-
-                    // Move file to public/uploads/course/syllabus
-                    $pdfFile->move(public_path('/uploads/course/syllabus/'), $pdfName);
-
-                    $syllabus->file = $pdfPath;
-                    $syllabus->save();
-                }
-            }
+            return redirect()->back()->with('success', 'Course and syllabuses created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
-
-        return redirect()->back()->with('success', 'Course and syllabuses created successfully.');
     }
+
 
     /**
      * Display the specified resource.
@@ -97,6 +130,8 @@ class CourseController extends Controller
     public function edit(string $id)
     {
         //
+        $course = Course::findOrFail($id);
+        return view('backend.course.edit', compact('course'));
     }
 
     /**
@@ -104,7 +139,19 @@ class CourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
+        try {
+
+            $course =  Course::find($id);
+            $course->grade_category = $request->grade_category;
+            $course->status = 1;
+            $course->file = upload_image($request, $course, $course->file);
+            $course->save();
+
+            return redirect()->route('course.index')->with('success', 'Course and syllabuses Updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -112,6 +159,11 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $course =  Course::find($id);
+         if ($course->file && file_exists(public_path($course->file))) {
+        unlink(public_path($course->file));
+    }
+        $course->delete();
+        return redirect()->route('course.index')->with('success', 'Course and syllabuses Deleted successfully.');
     }
 }

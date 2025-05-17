@@ -39,14 +39,17 @@
 
                                                     <a href="{{ route('gradecategory.edit', $item->id) }}"
                                                         class="btn btn-sm btn-info">Edit</a>
-
                                                     <form action="{{ route('gradecategory.destroy', $item->id) }}"
-                                                        method="POST" style="display:inline-block;">
+                                                        method="POST" id="delete-form-{{ $item->id }}"
+                                                        style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" onclick="confirmDelete({{ $item->id }})"
-                                                            class="btn btn-sm btn-danger">Delete</button>
+                                                            class="btn btn-sm btn-danger">
+                                                            Delete
+                                                        </button>
                                                     </form>
+
                                                 </td>
 
 

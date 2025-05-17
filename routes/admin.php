@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Backend\AdminCampusController;
+use App\Http\Controllers\Backend\CourseController;
 use App\Http\Controllers\Backend\GradeController;
 use App\Http\Controllers\Backend\LocationController;
 use App\Http\Controllers\Backend\MainCategoryController;
@@ -68,6 +69,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::resource('location', LocationController::class);
     Route::resource('school-campus', AdminCampusController::class);
+    Route::post('/course/status-update/{id}', [CourseController::class, 'updateStatus'])->name('course.status.update');
+
     // Route::resource('location', App\Http\Controllers\Backend\LessonController::class);
     Route::resource('course', App\Http\Controllers\Backend\CourseController::class);
     Route::resource('gradecategory', App\Http\Controllers\Backend\GradecategoryController::class);

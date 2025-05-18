@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('novels', function (Blueprint $table) {
             $table->id();
+            $table->string('unit_name');
+            $table->boolean('status')->default(1);
+            $table->foreignId('grade_category')->constrained('gradecategories')->onDelete('cascade');
             $table->timestamps();
         });
     }

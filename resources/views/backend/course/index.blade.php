@@ -18,7 +18,7 @@
 
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Select Grade Category</label>
-                                        <select name="grade_category" id="" class="from-control select2">
+                                        <select name="grade_category_id" id="" class="from-control select2">
                                             <option value="" disabled selected>Select a Course Grade</option>
                                             @foreach (App\Models\Gradecategory::select('id', 'name', 'garde_id')->where('name', 'Course Syllabus')->get() as $item)
                                                 <option value="{{ $item->id }}">

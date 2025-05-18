@@ -74,8 +74,15 @@
                                         <label for="name" class="form-label">Category Name</label>
                                         <input type="text" class="form-control" id="name" name="name" required>
                                     </div>
-
-                                    <div class="mb-3">
+@php
+    $plucks = App\Models\Grade::pluck('id');
+    foreach($plucks AS $pluck)
+    dd($plucks);
+        $pluck;
+    ;
+@endphp
+         
+                          <div class="mb-3">
                                         <label for="grade_id" class="form-label">Select Grade</label>
                                         <select class="form-control" id="grade_id" name="grade_id" required>
                                             <option value="">-- Select Grade --</option>
@@ -99,4 +106,16 @@
             </div>
         </div>
     </div>
+
+      <script>
+    $(document).ready(function() {
+        $('#permissionsTable').DataTable({
+            // Optional: customize table options
+            "pageLength": 10,
+            "lengthChange": true,
+            "ordering": true,
+            "info": true
+        });
+    });
+</script>
 @endsection

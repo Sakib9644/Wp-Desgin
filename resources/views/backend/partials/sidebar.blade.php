@@ -133,80 +133,106 @@
                 @endcanany
 
                 {{-- Categories --}}
-                @canany(['category-create', 'grade-create', 'teachergrades-create', 'location-create',
-                    'school-campus-create'])
-                    @php
-                        $isRolePermissionActive =
-                            Route::is('main-category.index') ||
-                            Route::is('grades.index') ||
-                            Route::is('teachergrades.index') ||
-                            Route::is('location.index') ||
-                            Route::is('school-campus.index')||
-                            Route::is('gradecategory.index');
-                    @endphp
+              @canany([
+    'category-create', 
+    'grade-create', 
+    'teachergrades-create', 
+    'location-create',
+    'school-campus-create',
+    'gradecategory-create',
+    'course-create',
+    'novel-create'
+])
+    @php
+        $isRolePermissionActive =
+            Route::is('main-category.index') ||
+            Route::is('grades.index') ||
+            Route::is('teachergrades.index') ||
+            Route::is('location.index') ||
+            Route::is('school-campus.index') ||
+            Route::is('gradecategory.index') ||
+            Route::is('course.index') ||
+            Route::is('novel.index');
+    @endphp
 
+    <li class="nav-item">
+        <a class="nav-link menu-link" href="#sidebarCategory" data-bs-toggle="collapse" role="button"
+            aria-expanded="{{ $isRolePermissionActive ? 'true' : 'false' }}"
+            aria-controls="sidebarCategory">
+            <i class="ri-list-unordered"></i>
+            <span data-key="t-category">Modules</span>
+        </a>
+
+        <div class="collapse menu-dropdown {{ $isRolePermissionActive ? 'show' : '' }}" id="sidebarCategory">
+            <ul class="nav nav-sm flex-column">
+                @can('category-create')
                     <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarCategory" data-bs-toggle="collapse" role="button"
-                            aria-expanded="{{ $isRolePermissionActive ? 'true' : 'false' }}"
-                            aria-controls="sidebarCategory">
-                            <i class="ri-list-unordered"></i>
-                            <span data-key="t-category">Modules</span>
-                        </a>
-
-                        <div class="collapse menu-dropdown {{ $isRolePermissionActive ? 'show' : '' }}"
-                            id="sidebarCategory">
-                            <ul class="nav nav-sm flex-column">
-                                @can('category-create')
-                                    <li class="nav-item">
-                                        <a href="{{ route('main-category.index') }}"
-                                            class="nav-link {{ Route::is('main-category.index') ? 'active' : '' }}"
-                                            data-key="t-all-categories">Categories</a>
-                                    </li>
-                                @endcan
-
-                                @can('location-create')
-                                    <li class="nav-item">
-                                        <a href="{{ route('location.index') }}"
-                                            class="nav-link {{ Route::is('location.index') ? 'active' : '' }}"
-                                            data-key="t-location">Add Locations</a>
-                                    </li>
-                                @endcan
-                                  @can('school-campus-create')
-                                    <li class="nav-item">
-                                        <a href="{{ route('school-campus.index') }}"
-                                            class="nav-link {{ Route::is('school-campus.index') ? 'active' : '' }}"
-                                            data-key="t-school-campus">Assign Campus to Users</a>
-                                    </li>
-                                @endcan
-                                @can('grade-create')
-                                    <li class="nav-item">
-                                        <a href="{{ route('grades.index') }}"
-                                            class="nav-link {{ Route::is('grades.index') ? 'active' : '' }}"
-                                            data-key="t-grade">Grade</a>
-                                    </li>
-                                @endcan
-                                @can('gradecategory-create')
-                                    <li class="nav-item">
-                                        <a href="{{ route('gradecategory.index') }}"
-                                            class="nav-link {{ Route::is('gradecategory.index') ? 'active' : '' }}"
-                                            data-key="t-grade">Grade Category</a>
-                                    </li>
-                                @endcan
-
-                              
-                                @can('teachergrades-create')
-                                    <li class="nav-item">
-                                        <a href="{{ route('teachergrades.index') }}"
-                                            class="nav-link {{ Route::is('teachergrades.index') ? 'active' : '' }}"
-                                            data-key="t-teachergrades">Assign Grade to Teacher</a>
-                                    </li>
-                                @endcan
-                            </ul>
-
-
-                        </div>
+                        <a href="{{ route('main-category.index') }}"
+                            class="nav-link {{ Route::is('main-category.index') ? 'active' : '' }}"
+                            data-key="t-all-categories">Categories</a>
                     </li>
-                @endcanany
+                @endcan
+
+                @can('location-create')
+                    <li class="nav-item">
+                        <a href="{{ route('location.index') }}"
+                            class="nav-link {{ Route::is('location.index') ? 'active' : '' }}"
+                            data-key="t-location">Add Locations</a>
+                    </li>
+                @endcan
+
+                @can('school-campus-create')
+                    <li class="nav-item">
+                        <a href="{{ route('school-campus.index') }}"
+                            class="nav-link {{ Route::is('school-campus.index') ? 'active' : '' }}"
+                            data-key="t-school-campus">Assign Campus to Users</a>
+                    </li>
+                @endcan
+
+                @can('grade-create')
+                    <li class="nav-item">
+                        <a href="{{ route('grades.index') }}"
+                            class="nav-link {{ Route::is('grades.index') ? 'active' : '' }}"
+                            data-key="t-grade">Grade</a>
+                    </li>
+                @endcan
+
+                @can('gradecategory-create')
+                    <li class="nav-item">
+                        <a href="{{ route('gradecategory.index') }}"
+                            class="nav-link {{ Route::is('gradecategory.index') ? 'active' : '' }}"
+                            data-key="t-grade-category">Grade Category</a>
+                    </li>
+                @endcan
+
+                @can('teachergrades-create')
+                    <li class="nav-item">
+                        <a href="{{ route('teachergrades.index') }}"
+                            class="nav-link {{ Route::is('teachergrades.index') ? 'active' : '' }}"
+                            data-key="t-teachergrades">Assign Grade to Teacher</a>
+                    </li>
+                @endcan
+
+                @can('course-create')
+                    <li class="nav-item">
+                        <a href="{{ route('course.index') }}"
+                            class="nav-link {{ Route::is('course.index') ? 'active' : '' }}"
+                            data-key="t-course">Course Syllabus</a>
+                    </li>
+                @endcan
+
+                @can('novel-create')
+                    <li class="nav-item">
+                        <a href="{{ route('novel.index') }}"
+                            class="nav-link {{ Route::is('novel.index') ? 'active' : '' }}"
+                            data-key="t-novel">Novels</a>
+                    </li>
+                @endcan
+            </ul>
+        </div>
+    </li>
+@endcanany
+
 
 
             </ul>

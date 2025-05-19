@@ -36,23 +36,15 @@
                                                 </td>
                                                 <td>{{ optional($item->grade)->name }}</td>
                                                 <td>
-
-                                                    <a href="{{ route('gradecategory.edit', $item->id) }}"
-                                                        class="btn btn-sm btn-info">Edit</a>
-                                                    <form action="{{ route('gradecategory.destroy', $item->id) }}"
-                                                        method="POST" id="delete-form-{{ $item->id }}"
-                                                        style="display:inline-block;">
+                                                    <a href="{{ route('gradecategory.edit', $item->id) }}" class="btn btn-sm btn-info">Edit</a>
+                                                    <form action="{{ route('gradecategory.destroy', $item->id) }}" method="POST" id="delete-form-{{ $item->id }}" style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" onclick="confirmDelete({{ $item->id }})"
-                                                            class="btn btn-sm btn-danger">
+                                                        <button type="button" onclick="confirmDelete({{ $item->id }})" class="btn btn-sm btn-danger">
                                                             Delete
                                                         </button>
                                                     </form>
-
                                                 </td>
-
-
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -66,23 +58,15 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title">Create Grade Category</h4>
-                                <form action="{{ route('gradecategory.store') }}" method="POST"
-                                    enctype="multipart/form-data">
+                                <form action="{{ route('gradecategory.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
 
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Category Name</label>
                                         <input type="text" class="form-control" id="name" name="name" required>
                                     </div>
-@php
-    $plucks = App\Models\Grade::pluck('id');
-    foreach($plucks AS $pluck)
-    dd($plucks);
-        $pluck;
-    ;
-@endphp
-         
-                          <div class="mb-3">
+
+                                    <div class="mb-3">
                                         <label for="grade_id" class="form-label">Select Grade</label>
                                         <select class="form-control" id="grade_id" name="grade_id" required>
                                             <option value="">-- Select Grade --</option>
@@ -107,15 +91,22 @@
         </div>
     </div>
 
-      <script>
-    $(document).ready(function() {
-        $('#permissionsTable').DataTable({
-            // Optional: customize table options
-            "pageLength": 10,
-            "lengthChange": true,
-            "ordering": true,
-            "info": true
+    <script>
+        $(document).ready(function() {
+            $('#permissionsTable').DataTable({
+                // Optional: customize table options
+                "pageLength": 10,
+                "lengthChange": true,
+                "ordering": true,
+                "info": true
+            });
         });
-    });
-</script>
+
+        function confirmDelete(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        }
+    </script>
 @endsection
+

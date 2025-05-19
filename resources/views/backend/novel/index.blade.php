@@ -16,7 +16,7 @@
                                 @csrf
                                 <div class="mb-3">
                                     <label for="grade_category_id" class="form-label">Grade Category</label>
-                                    <select name="grade_category_id" id="grade_category_id" class="form-control" required>
+                                    <select name="grade_category_id" id="grade_category_id" class="form-control select2" required>
                                         @foreach (App\Models\Gradecategory::with('grade')->where('name', 'Novel Unit')->get() as $item)
                                             <option value="{{ $item->id }}">
                                                 {{ $item->name }} ({{ $item->grade->name ?? 'No Grade' }})

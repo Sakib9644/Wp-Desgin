@@ -129,7 +129,7 @@ class NovelController extends Controller
             $novel = Novel::findOrFail($id);
             $novel->delete();
 
-            return redirect()->back()->with('success', 'Novel deleted successfully');
+            return redirect()->back()->with('success', 'Novel Unit deleted successfully');
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Delete failed: ' . $e->getMessage()]);
         }

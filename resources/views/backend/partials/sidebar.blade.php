@@ -152,7 +152,8 @@
             Route::is('school-campus.index') ||
             Route::is('gradecategory.index') ||
             Route::is('course.index') ||
-            Route::is('novel.index');
+            Route::is('novel.index')||
+             Route::is('novelunitdetails.index')
     @endphp
 
     <li class="nav-item">
@@ -225,7 +226,14 @@
                     <li class="nav-item">
                         <a href="{{ route('novel.index') }}"
                             class="nav-link {{ Route::is('novel.index') ? 'active' : '' }}"
-                            data-key="t-novel">Novels</a>
+                            data-key="t-novel">Novels Unit</a>
+                    </li>
+                @endcan
+                @can('novelunitdetails-create')
+                    <li class="nav-item">
+                        <a href="{{ route('novelunitdetails.index') }}"
+                            class="nav-link {{ Route::is('novelunitdetails.index') ? 'active' : '' }}"
+                            data-key="t-novelunitdetails">Novel Unit Details</a>
                     </li>
                 @endcan
             </ul>

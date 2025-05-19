@@ -75,4 +75,5 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('course', App\Http\Controllers\Backend\CourseController::class);
     Route::resource('novel', App\Http\Controllers\Backend\NovelController::class);
     Route::resource('gradecategory', App\Http\Controllers\Backend\GradecategoryController::class);
+    Route::resource('novelunitdetails', App\Http\Controllers\Backend\NovelunitlistController::class);
 });

@@ -141,7 +141,9 @@
     'school-campus-create',
     'gradecategory-create',
     'course-create',
-    'novel-create'
+    'novel-create',
+    'novellessoonsfiles-create',
+    'novelunitlessons-create',
 ])
     @php
         $isRolePermissionActive =
@@ -153,7 +155,10 @@
             Route::is('gradecategory.index') ||
             Route::is('course.index') ||
             Route::is('novel.index')||
-             Route::is('novelunitdetails.index')
+            Route::is('novelunitdetails.index')||
+            Route::is('novelunitlessons.index') ||
+            Route::is('novellessoonsfiles.index')
+
     @endphp
 
     <li class="nav-item">
@@ -234,6 +239,20 @@
                         <a href="{{ route('novelunitdetails.index') }}"
                             class="nav-link {{ Route::is('novelunitdetails.index') ? 'active' : '' }}"
                             data-key="t-novelunitdetails">Novel Unit Details</a>
+                    </li>
+                @endcan
+                @can('novelunitlessons-create')
+                    <li class="nav-item">
+                        <a href="{{ route('novelunitlessons.index') }}"
+                            class="nav-link {{ Route::is('novelunitlessons.index') ? 'active' : '' }}"
+                            data-key="t-novelunitlessons">Novel Lessons</a>
+                    </li>
+                @endcan
+                @can('novellessoonsfiles-create')
+                    <li class="nav-item">
+                        <a href="{{ route('novellessoonsfiles.index') }}"
+                            class="nav-link {{ Route::is('novellessoonsfiles.index') ? 'active' : '' }}"
+                            data-key="t-novellessoonsfiles">Novel Lessons FIles</a>
                     </li>
                 @endcan
             </ul>

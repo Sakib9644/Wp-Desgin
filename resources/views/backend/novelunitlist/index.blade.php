@@ -5,6 +5,9 @@
         <div class="page-content">
             <div class="container-fluid">
                 <div class="row">
+                    <div id="clock" style="font-size: 24px; font-weight: bold;"></div>
+
+
                     <!-- Form Column -->
                     <div class="col-md-4">
                         <div class="card">
@@ -71,6 +74,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Unit Name</th>
+                                            <th>Novel Name</th>
                                             <th>Title</th>
                                             <th>About</th>
                                             <th>Description</th>
@@ -106,6 +110,10 @@
                     {
                         data: 'unit_name',
                         name: 'unit_name'
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
                     },
                     {
                         data: 'title',

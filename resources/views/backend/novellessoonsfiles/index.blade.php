@@ -24,7 +24,8 @@
                                                 <option value="{{ $item->id }}">
                                                     {{ $item->name }} -
                                                     {{ $item->novel_unit_lists->name }} -
-                                                    {{ optional($item->novel_unit_lists->novel)->unit_name ?? 'No Unit Name' }} -
+                                                    {{ optional($item->novel_unit_lists->novel)->unit_name ?? 'No Unit Name' }}
+                                                    -
                                                     {{ optional(optional($item->novel_unit_lists->novel)->grades_category)->grade->name ?? 'No Grade' }}
                                                 </option>
                                             @endforeach
@@ -81,6 +82,14 @@
             </div>
         </div>
     </div>
+      <script>
+        $(document).on('change', '.toggle-status', function() {
+            var form = $(this).closest('form');
+            var isChecked = $(this).is(':checked');
+            form.find('input[name="status"]').val(isChecked ? 1 : 0);
+            form.submit();
+        });
+    </script>
     <script>
         $(function() {
             $('#novel-files-table').DataTable({

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Coursesyllabus;
+use App\Models\Novellessoonsfiles;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Facades\DataTables;
 
 class CourseController extends Controller
@@ -83,13 +85,24 @@ class CourseController extends Controller
     }
     public function updateStatus(Request $request, $id)
     {
-        $course = Course::findOrFail($id);
+        if(Route::is('lesson.status.update')){
+        $course = Novellessoonsfiles::findOrFail($id);
+        $course->status = $request->status;
+        $course->save();
+
+        $statusMessage = $course->status ? 'Activated' : 'Deactivated';
+
+        return redirect()->back()->with('success', 'Status "' . $statusMessage . '" successfully.'); 
+        }
+        else{
+            $course = Course::findOrFail($id);
         $course->status = $request->status;
         $course->save();
 
         $statusMessage = $course->status ? 'Activated' : 'Deactivated';
 
         return redirect()->back()->with('success', 'Status "' . $statusMessage . '" successfully.');
+        }
     }
 
     /**

@@ -70,6 +70,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('location', LocationController::class);
     Route::resource('school-campus', AdminCampusController::class);
     Route::post('/course/status-update/{id}', [CourseController::class, 'updateStatus'])->name('course.status.update');
+    Route::post('/lesson/status-update/{id}', [CourseController::class, 'updateStatus'])->name('lesson.status.update');
 
     // Route::resource('location', App\Http\Controllers\Backend\LessonController::class);
     Route::resource('course', App\Http\Controllers\Backend\CourseController::class);

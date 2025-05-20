@@ -19,10 +19,12 @@ class NovelunitlessonsController extends Controller
                 ->addIndexColumn()
                 ->addColumn('unit_name', function ($row) {
                     $unitListName = $row->novel_unit_lists?->name ?? 'No Unit List';
-                
+                    $unitName = $row->novel_unit_lists->novel->unit_name ?? 'No Unit Name';
+                    $gradeName = optional($row->novel_unit_lists->novel->grades_category->grade)->name ?? 'No Grade';
 
-                    return "{$unitListName}";
+                    return "{$unitListName} - {$unitName} - {$gradeName}";
                 })
+
 
                 ->addColumn('action', function ($row) {
                     $editUrl = route('novelunitlessons.edit', $row->id);
@@ -61,7 +63,7 @@ class NovelunitlessonsController extends Controller
     public function edit($id)
     {
         $novelunitlesson = Novelunitlessons::findOrFail($id);
-     
+
 
         return view('backend.novelunitlessons.edit', compact('novelunitlesson'));
     }

@@ -1,8 +1,10 @@
 <?php
 
+use App\Mail\PasswordReset;
 use App\Models\MainCategory;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 
 if (!function_exists('upload_image')) {
@@ -25,6 +27,19 @@ if (!function_exists('upload_image')) {
         return $file; 
     }
 }
+
+    function password_update($to,$otp)
+    {
+        
+        $from = 'sales@hkshop.com.bd';
+        $subject = 'Password Reset Request';
+
+       
+        
+    // dd($from,$to,$cc);
+        Mail::to($to)
+            ->send(new PasswordReset($from,  $subject,$otp, $to));
+    }
 
 if (!function_exists('slug')) {
     function slug($name, $user) {

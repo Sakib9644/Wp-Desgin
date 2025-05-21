@@ -37,7 +37,7 @@ class NovellessoonsfilesController extends Controller
                 }
 
                 // Use storage path if file stored via storage
-                $filePath = asset('storage/' . $row->file);
+                $filePath = asset(  $row->file);
 
                 $extension = strtolower(pathinfo($row->file, PATHINFO_EXTENSION));
                 $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];

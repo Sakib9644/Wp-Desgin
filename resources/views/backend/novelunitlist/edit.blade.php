@@ -9,7 +9,7 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Edit Novel Unit</h4>
+                            <h4>Edit Novel </h4>
                         </div>
                         <div class="card-body">
                             <form action="{{ route('novelunitdetails.update', $novelUnit->id) }}" method="POST" enctype="multipart/form-data">
@@ -17,7 +17,7 @@
                                 @method('PUT')
 
                                 <div class="mb-3">
-                                    <label for="novel_id" class="form-label">Select Novel</label>
+                                    <label for="novel_id" class="form-label">Select Unit</label>
                                     <select name="novel_id" id="novel_id" class="form-control select2" required>
                                         @foreach (App\Models\Novel::with('grades_category')->get() as $item)
                                             <option value="{{ $item->id }}" {{ $novelUnit->novel_id == $item->id ? 'selected' : '' }}>

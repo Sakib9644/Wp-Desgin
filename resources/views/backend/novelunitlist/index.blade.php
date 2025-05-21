@@ -12,7 +12,7 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h4>Add Novel Unit Details</h4>
+                                <h4>Add Novel </h4>
                             </div>
                             <div class="card-body">
                                 <form action="{{ route('novelunitdetails.store') }}" method="POST"
@@ -66,7 +66,7 @@
                     <div class="col-md-8">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="mb-0">Novel Unit Details</h4>
+                                <h4 class="mb-0">Novel list</h4>
                             </div>
                             <div class="card-body">
                                 <table class="table table-bordered" id="teacherGradeTable">

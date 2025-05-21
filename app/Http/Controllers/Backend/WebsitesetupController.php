@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\WebsiteSetup;
 use Exception;
@@ -12,6 +13,9 @@ class WebsitesetupController extends Controller
 {
     public function edit(){
         $data = WebsiteSetup::first();
+
+      
+       
         return view('backend.website-setting.admin',compact('data'));
     }
 

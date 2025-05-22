@@ -47,11 +47,13 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
 <script>
-   $(document).ready(function() {
-    $('.select2').select2();
-});
+    $(document).ready( function() {
+        $('.select2').select2();
+    });
 </script>
+
 <style>
     .swal2-toast.swal2-success {
         background-color: #28a745 !important; /* Green */

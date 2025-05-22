@@ -1,6 +1,7 @@
 <?php
 
 use App\Mail\PasswordReset;
+use App\Mail\register_verify_otp;
 use App\Models\MainCategory;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -31,7 +32,7 @@ if (!function_exists('upload_image')) {
     function password_update($to,$otp)
     {
         
-        $from = 'sales@hkshop.com.bd';
+        $from = env('MAIL_FROM_ADDRESS');
         $subject = 'Password Reset Request';
 
        
@@ -39,6 +40,17 @@ if (!function_exists('upload_image')) {
     // dd($from,$to,$cc);
         Mail::to($to)
             ->send(new PasswordReset($from,  $subject,$otp, $to));
+    }
+    function verify_otp($to,$otp)
+    {
+        
+        $from = 'demo@gmail.com';
+        $subject = 'Register Otp Request';
+
+       
+        
+        Mail::to($to)
+            ->send(new register_verify_otp($from,  $subject,$otp, $to));
     }
 
 if (!function_exists('slug')) {

@@ -47,7 +47,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Grade</th>
+                                        <th>Unit</th>
                                         <th>Grade Category</th>
                                         <th>Action</th>
                                     </tr>
